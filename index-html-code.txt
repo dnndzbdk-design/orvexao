@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Orvexao is a community-driven Web3 project. Complete quests, check in daily and invite friends to earn O Points.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' fill='%2314201b'/%3E%3Ccircle cx='19' cy='21' r='9' fill='none' stroke='%236dd6bd' stroke-width='4'/%3E%3Ccircle cx='30' cy='10' r='3.2' fill='%236dd6bd'/%3E%3C/svg%3E">
+<title>Orvexao – Complete tasks, earn O Points</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Archivo+Black&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f1f3fb;--card:#fff;--ink:#141733;--mute:#656a8c;--line:#e0e4f4;--soft:#eceffc;
+  --a1:#4338ff;--a2:#8a3dff;--on:#fff;--ok:#0e9f6e;--okbg:#def6ea;--gold:#f5a524;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){--bg:#0c0e22;--card:#161a38;--ink:#eef0ff;--mute:#98a0cc;--line:#252a52;--soft:#1e2346;--a1:#6c63ff;--a2:#a35cff;--ok:#3ddc9a;--okbg:#10322a;color-scheme:dark}
+}
+:root[data-theme="dark"]{--bg:#0c0e22;--card:#161a38;--ink:#eef0ff;--mute:#98a0cc;--line:#252a52;--soft:#1e2346;--a1:#6c63ff;--a2:#a35cff;--ok:#3ddc9a;--okbg:#10322a;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Hind Siliguri",system-ui,sans-serif;line-height:1.5;-webkit-font-smoothing:antialiased}
+main{max-width:520px;margin:0 auto;padding:18px 16px 48px}
+button{font:inherit;cursor:pointer;border:0}
+button:focus-visible{outline:3px solid var(--a1);outline-offset:2px}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.logo{display:flex;align-items:center;gap:10px;font-family:Sora,sans-serif;font-weight:800;font-size:20px;letter-spacing:-.02em}
+.mark{width:34px;height:34px;border-radius:11px;background:linear-gradient(135deg,var(--a1),var(--a2));display:grid;place-content:center;color:#fff;font-size:17px}
+.chip{background:var(--card);border:1px solid var(--line);border-radius:99px;padding:5px 12px;font-size:13px;font-weight:600;color:var(--mute)}
+.chip b{color:var(--gold)}
+
+.hero{border-radius:28px;padding:22px;color:#fff;background:linear-gradient(135deg,var(--a1),var(--a2));display:flex;gap:18px;align-items:center}
+.dial{position:relative;width:120px;height:120px;flex:none}
+.dial svg{width:100%;height:100%;transform:rotate(-90deg)}
+.dial .bg{stroke:rgba(255,255,255,.25)}
+.dial .fg{stroke:#fff;stroke-linecap:round;transition:stroke-dashoffset .7s cubic-bezier(.3,.8,.3,1)}
+.dial .n{position:absolute;inset:0;display:grid;place-content:center;text-align:center}
+.n b{font-family:Sora,sans-serif;font-size:30px;line-height:1;font-weight:800}
+.n span{font-size:11.5px;opacity:.85}
+.hero h1{margin:0 0 4px;font-size:19px;line-height:1.3;font-weight:700}
+.hero p{margin:0;font-size:13.5px;opacity:.9}
+.lv{display:inline-block;margin-top:10px;background:rgba(255,255,255,.2);padding:3px 12px;border-radius:99px;font-size:13px;font-weight:600}
+
+h2{display:flex;justify-content:space-between;align-items:baseline;font-size:17px;margin:26px 4px 10px;font-weight:700}
+h2 small{font-size:12.5px;font-weight:500;color:var(--mute)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:16px}
+
+.days{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:14px}
+.day{background:var(--soft);border-radius:12px;padding:8px 0;text-align:center;font-size:11.5px;color:var(--mute);border:1.5px solid transparent}
+.day b{display:block;font-family:Sora,sans-serif;font-size:14px;color:var(--ink)}
+.day.got{background:var(--okbg);color:var(--ok)}
+.day.got b{color:var(--ok)}
+.day.now{border-color:var(--a1)}
+.btn{width:100%;border-radius:14px;padding:12px;font-weight:700;font-size:15px;color:var(--on);background:linear-gradient(135deg,var(--a1),var(--a2))}
+.btn:disabled{background:var(--soft);color:var(--mute);cursor:default}
+.streak{display:flex;justify-content:space-between;font-size:13.5px;color:var(--mute);margin-bottom:12px}
+.streak b{color:var(--ink)}
+
+.task{display:grid;grid-template-columns:44px 1fr auto;gap:12px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:12px 14px;margin-bottom:10px}
+.task.done{background:var(--okbg);border-color:transparent}
+.ico{width:44px;height:44px;border-radius:14px;display:grid;place-content:center;font-size:20px;background:var(--soft)}
+.task h3{margin:0;font-size:15px;font-weight:600;line-height:1.3}
+.task small{color:var(--mute);font-size:12.5px}
+.task .p{font-family:Sora,sans-serif;font-weight:700;color:var(--a1)}
+.task.done .p{color:var(--ok)}
+.act{border-radius:12px;padding:9px 14px;font-weight:600;font-size:14px;background:var(--a1);color:#fff;min-width:88px}
+.act:disabled{opacity:.55;cursor:not-allowed}
+.act.ok{background:transparent;color:var(--ok);border:1.5px solid var(--ok)}
+
+.ref p{margin:0 0 12px;font-size:14px;color:var(--mute)}.ref p b{color:var(--a1)}
+.lk{display:flex;gap:8px;align-items:center;background:var(--soft);border-radius:14px;padding:6px 6px 6px 12px;margin-bottom:10px}
+.lk span{flex:1;min-width:0;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;user-select:all}
+.sm{border-radius:10px;padding:8px 14px;font-weight:600;font-size:13.5px;background:var(--a1);color:#fff}
+.shr{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.shr .sm{background:var(--soft);color:var(--ink);padding:10px}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.stats div{background:var(--soft);border-radius:14px;padding:10px;text-align:center}
+.stats b{display:block;font-family:Sora,sans-serif;font-size:22px}
+.stats span{font-size:12px;color:var(--mute)}
+.ms{display:flex;justify-content:space-between;padding:9px 12px;border-radius:12px;font-size:14px;border:1px dashed var(--line);margin-bottom:6px}
+.ms.ok{background:var(--okbg);border:1px solid transparent;color:var(--ok)}
+.demo{width:100%;margin-top:6px;background:none;border:1px dashed var(--line);border-radius:12px;padding:9px;font-size:12.5px;color:var(--mute)}
+.lgs{width:34px;height:34px;flex:none}
+.about p{margin:0 0 14px;font-size:14.5px;color:var(--mute)}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.tile{background:var(--soft);border-radius:16px;padding:12px 8px;text-align:center;font-size:13px;font-weight:600}
+.tile i{display:block;font-style:normal;font-size:22px;margin-bottom:4px}
+.steps{counter-reset:s;list-style:none;margin:0;padding:0}
+.steps li{counter-increment:s;display:grid;grid-template-columns:34px 1fr;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+.steps li:last-child{border:0}
+.steps li::before{content:counter(s);width:34px;height:34px;border-radius:50%;display:grid;place-content:center;background:linear-gradient(135deg,var(--a1),var(--a2));color:#fff;font-family:Sora,sans-serif;font-weight:700}
+.steps b{display:block;font-size:15px}.steps span{font-size:13.5px;color:var(--mute)}
+.road{position:relative;padding-left:22px}
+.road::before{content:"";position:absolute;left:6px;top:6px;bottom:6px;width:2px;background:var(--line)}
+.ph{position:relative;margin-bottom:16px}
+.ph::before{content:"";position:absolute;left:-22px;top:5px;width:14px;height:14px;border-radius:50%;background:var(--card);border:3px solid var(--line)}
+.ph.on::before{border-color:var(--ok);background:var(--ok)}
+.ph.nx::before{border-color:var(--a1)}
+.ph b{font-size:15px}.ph em{font-style:normal;font-size:12px;font-weight:600;margin-left:6px;color:var(--mute)}
+.ph.on em{color:var(--ok)}.ph p{margin:2px 0 0;font-size:13.5px;color:var(--mute)}
+details{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:0 14px;margin-bottom:8px}
+summary{cursor:pointer;padding:13px 0;font-weight:600;font-size:15px;list-style:none;display:flex;justify-content:space-between;gap:10px}
+summary::after{content:"+";color:var(--a1);font-size:20px;line-height:1}
+details[open] summary::after{content:"−"}
+details p{margin:0 0 14px;font-size:14px;color:var(--mute)}
+footer{margin-top:30px;padding-top:20px;border-top:1px solid var(--line)}
+.fb{display:flex;align-items:center;gap:10px;font-family:Sora,sans-serif;font-weight:800;font-size:18px;margin-bottom:6px}
+footer p{margin:0 0 14px;font-size:13px;color:var(--mute)}
+.fl{display:flex;gap:8px;margin-bottom:14px}
+.fl a{flex:1;text-align:center;text-decoration:none;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:12px;padding:9px;font-weight:600;font-size:14px}
+.fl a:focus-visible{outline:3px solid var(--a1)}
+.disc{font-size:12px!important;line-height:1.5}
+h2{position:relative;padding-left:14px}
+h2::before{content:"";position:absolute;left:0;top:5px;width:4px;height:16px;border-radius:2px;background:linear-gradient(var(--a1),var(--a2))}
+.card,.task,details{box-shadow:0 10px 26px -20px rgba(40,40,140,.35)}
+.btn:hover,.act:hover,.sm:hover{filter:brightness(1.08)}
+.btn,.act,.sm{transition:filter .2s,transform .1s}.btn:active,.act:active,.sm:active{transform:scale(.97)}
+.tr{display:flex;gap:8px;align-items:center}
+.who{background:var(--card);border:1px solid var(--line);color:var(--ink);border-radius:99px;padding:5px 14px;font-weight:600;font-size:13px}
+.who:focus-visible{outline:3px solid var(--a1)}
+dialog{border:0;border-radius:24px;padding:22px;background:var(--card);color:var(--ink);width:min(92vw,400px);font-family:inherit}
+dialog::backdrop{background:rgba(10,12,30,.6)}
+dialog h3{margin:0 0 4px;font-size:19px}
+dialog p{margin:0 0 14px;font-size:13.5px;color:var(--mute)}
+dialog label{display:block;font-size:13px;font-weight:600;margin-bottom:6px}
+dialog input{width:100%;font:inherit;padding:12px 14px;border-radius:12px;border:1.5px solid var(--line);background:var(--soft);color:var(--ink);margin-bottom:6px}
+dialog input:focus{outline:none;border-color:var(--a1)}
+.er{min-height:18px;font-size:12.5px;color:#e5484d;margin-bottom:8px}
+.dn{font-size:12px!important;background:var(--soft);border-radius:12px;padding:10px 12px;margin:12px 0 0!important}
+.lo{width:100%;margin-top:8px;background:none;color:var(--mute);padding:8px;font-size:13.5px;text-decoration:underline}
+.foot{margin-top:24px;font-size:12.5px;color:var(--mute);text-align:center}
+.reset{background:none;color:var(--mute);text-decoration:underline;font-size:12.5px;padding:4px}
+.toast{position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom,0px));transform:translate(-50%,30px);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:99px;font-weight:600;font-size:14px;opacity:0;transition:.3s;pointer-events:none;width:max-content;max-width:calc(100vw - 32px);text-align:center}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+/* ===== Theme: beige + mint, brutalist cards ===== */
+:root{--bg:#e8e4d6;--card:#f5f2e9;--ink:#14201b;--mute:#58645d;--line:#c8c5b4;--soft:#dcd8c8;--a1:#1f7a5c;--a2:#6dd6bd;--ok:#1f7a5c;--okbg:#cfeee4;--gold:#a8741a;--bb:#16241f;--bi:#f5f2e9;--sh:#6dd6bd;--mono:"IBM Plex Mono","Hind Siliguri",ui-monospace,monospace;--disp:"Archivo Black","Hind Siliguri",sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1915;--card:#16241f;--ink:#ece9dc;--mute:#9fb2a8;--line:#2b4338;--soft:#1e3128;--a1:#6dd6bd;--a2:#6dd6bd;--ok:#6dd6bd;--okbg:#17382f;--gold:#e0b04a;--bb:#6dd6bd;--bi:#0f1915;--sh:#2f6b58}}
+:root[data-theme="dark"]{--bg:#0f1915;--card:#16241f;--ink:#ece9dc;--mute:#9fb2a8;--line:#2b4338;--soft:#1e3128;--a1:#6dd6bd;--a2:#6dd6bd;--ok:#6dd6bd;--okbg:#17382f;--gold:#e0b04a;--bb:#6dd6bd;--bi:#0f1915;--sh:#2f6b58}
+.card,.task,details,.tile,.day,.stats div,.ms,.lk,.chip,.who,.btn,.act,.sm,.lv,.ico,.demo,.fl a,.hero,dialog,.dn,.toast,dialog input{border-radius:0}
+.card,.hero,dialog{background:var(--card);color:var(--ink);border:1.5px solid var(--ink);box-shadow:6px 6px 0 var(--sh)}
+.task,details{background:var(--card);border:1.5px solid var(--ink);box-shadow:3px 3px 0 var(--sh)}
+.task.done{background:var(--okbg);border-color:var(--ok)}
+.kick{display:flex;align-items:center;gap:10px;font:600 12px var(--mono);text-transform:uppercase;letter-spacing:.1em;margin:8px 0 12px}
+.kick::before{content:"";width:26px;height:4px;background:var(--a2)}
+.big{font-family:var(--disp);font-size:clamp(40px,14vw,68px);line-height:.95;text-transform:uppercase;letter-spacing:-.01em;margin-bottom:20px}
+.big span{color:var(--a2)}
+.hero p{color:var(--mute);opacity:1}
+.dial .bg{stroke:var(--line)}.dial .fg{stroke:var(--a1);stroke-linecap:butt}
+.n b,.stats b,.day b,.task .p{font-family:var(--disp);font-weight:400}
+.lv{background:var(--a2);color:#14201b;font:600 12px var(--mono);letter-spacing:.06em}
+.btn,.act,.sm{background:var(--bb);color:var(--bi);box-shadow:3px 3px 0 var(--sh);font-weight:700;letter-spacing:.02em}
+.btn:disabled{background:var(--soft);color:var(--mute);box-shadow:none}
+.act:disabled{opacity:.6;box-shadow:none}
+.act.ok{background:transparent;color:var(--ok);border:1.5px solid var(--ok);box-shadow:none}
+.shr .sm{background:var(--card);color:var(--ink);border:1.5px solid var(--ink)}
+.who{background:var(--a2);color:#14201b;border:1.5px solid var(--a1);font-family:var(--mono)}
+.chip{border:1.5px solid var(--ink);background:var(--card);font:600 12px var(--mono)}
+.logo,.fb{font-family:var(--disp);text-transform:uppercase;letter-spacing:.02em;font-weight:400}
+#lgg stop:first-child{stop-color:#14201b}#lgg stop:last-child{stop-color:#1f7a5c}
+#lg circle:last-child{fill:#6dd6bd}#lg rect{rx:0}
+h2{font:600 14px/1.3 var(--mono);text-transform:uppercase;letter-spacing:.06em;padding-left:30px;margin-top:30px}
+h2 small{font-size:11.5px}
+h2::before{width:20px;height:4px;top:8px;border-radius:0;background:var(--a2)}
+.steps li::before{border-radius:0;background:var(--bb);color:var(--bi);font-family:var(--disp);font-weight:400}
+.ph::before{border-radius:0}
+.day{border:1.5px solid var(--line);background:var(--card)}
+.day.got{background:var(--okbg);border-color:var(--ok)}
+.day.now{border-color:var(--ink);background:var(--a2);color:#14201b}.day.now b{color:#14201b}
+.tile{background:var(--soft);border:1.5px solid var(--ink)}
+.stats div{background:var(--soft);border:1.5px solid var(--line)}
+.lk{background:var(--soft);border:1.5px dashed var(--ink)}
+.ms{border:1.5px dashed var(--line)}
+.ico{background:var(--a2);color:#14201b;border:1.5px solid var(--ink)}
+.demo{border:1.5px dashed var(--mute)}
+dialog input{border:1.5px solid var(--ink);background:var(--card)}
+dialog::backdrop{background:rgba(10,24,18,.65)}
+.toast{background:var(--ink);color:var(--bg);font-family:var(--mono)}
+footer{border-top:1.5px solid var(--ink)}
+.fl a{border:1.5px solid var(--ink);background:var(--card);box-shadow:3px 3px 0 var(--sh)}
+.or{text-align:center;font:600 12px var(--mono);color:var(--mute);margin:12px 0}.okm{font-size:13px;color:var(--ok);margin-bottom:8px}
+</style>
+</head>
+<body>
+<main>
+  <div class="top">
+    <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><symbol id="lg" viewBox="0 0 40 40"><defs><linearGradient id="lgg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4338ff"/><stop offset="1" stop-color="#8a3dff"/></linearGradient></defs><rect width="40" height="40" rx="12" fill="url(#lgg)"/><circle cx="19" cy="21" r="9" fill="none" stroke="#fff" stroke-width="3.5"/><circle cx="30" cy="10" r="3.2" fill="#fff"/></symbol></svg>
+    <div class="logo"><svg class="lgs" role="img" aria-label="Orvexao logo"><use href="#lg"/></svg>Orvexao</div>
+    <div class="tr"><div class="chip">🔥 <b id="stk">0</b> days</div><div class="chip">Demo</div></div>
+  </div>
+
+  <div class="kick">Community quests. Scored.</div>
+  <p class="foot" style="text-align:left;margin:0 0 14px">Demo mode: no login needed. Your progress is saved only in this browser.</p>
+  <div class="big" aria-hidden="true">Earn<br><span>O Points.</span></div>
+  <section class="hero" aria-live="polite">
+    <div class="dial">
+      <svg viewBox="0 0 120 120" aria-hidden="true">
+        <circle class="bg" cx="60" cy="60" r="52" fill="none" stroke-width="10"/>
+        <circle class="fg" id="fg" cx="60" cy="60" r="52" fill="none" stroke-width="10" stroke-dasharray="326.7" stroke-dashoffset="326.7"/>
+      </svg>
+      <div class="n"><b id="total">0</b><span>O Points</span></div>
+    </div>
+    <div>
+      <h1 id="hh">Complete tasks, earn O Points</h1>
+      <p id="next">100 points to the next level</p>
+      <span class="lv" id="lv">New member</span>
+    </div>
+  </section>
+
+  <h2>What is Orvexao? <small>About</small></h2>
+  <div class="card about">
+    <p>Orvexao is a community-driven Web3 project. Members earn O Points through social quests, daily check-ins and referrals, and grow together with the project.</p>
+    <div class="tiles"><div class="tile"><i>🤝</i>Community</div><div class="tile"><i>🔍</i>Transparency</div><div class="tile"><i>🎁</i>Rewards</div></div>
+  </div>
+
+  <h2>How it works <small>3 steps</small></h2>
+  <div class="card"><ol class="steps">
+    <li><div><b>Complete quests</b><span>Finish the X and Telegram quests to collect points.</span></div></li>
+    <li><div><b>Come back often</b><span>Check in every day and refer your friends.</span></div></li>
+    <li><div><b>Level up</b><span>As your points grow, new levels unlock.</span></div></li>
+  </ol></div>
+
+  <h2>Daily check-in <small>Once a day</small></h2>
+  <div class="card">
+    <div class="streak"><span>Streak: <b id="stk2">0</b> days</span><span id="today">Today’s reward: <b></b></span></div>
+    <div class="days" id="days"></div>
+    <button class="btn" id="ci">Check in today</button>
+  </div>
+
+  <h2>X (Twitter) quests <small id="c1"></small></h2>
+  <div id="tw"></div>
+
+  <h2>Telegram quests <small id="c2"></small></h2>
+  <div id="tg"></div>
+
+  <h2>Referral program <small>Invite friends</small></h2>
+  <div class="card ref">
+    <p>Earn <b>+50</b> O Points for every successful referral, and your friend gets <b>+25</b>.</p>
+    <div class="lk"><span id="rlink"></span><button class="sm" id="rcopy">Copy</button></div>
+    <div class="shr"><button class="sm" id="rx">Share on X</button><button class="sm" id="rtg">Share on Telegram</button></div>
+    <div class="stats"><div><b id="rc">0</b><span>Total referrals</span></div><div><b id="re">0</b><span>Points from referrals</span></div></div>
+    <div id="miles"></div>
+    <button class="demo" id="rsim">Demo: simulate a referral</button>
+  </div>
+
+  <h2>Roadmap <small>Plan</small></h2>
+  <div class="card road">
+    <div class="ph on"><b>Phase 1<em>Live</em></b><p>Community quests, daily check-in and O Points.</p></div>
+    <div class="ph nx"><b>Phase 2<em>Next</em></b><p>Referral tracking and leaderboard.</p></div>
+    <div class="ph"><b>Phase 3<em>Planned</em></b><p>Announcement about the use of O Points.</p></div>
+    <div class="ph"><b>Phase 4<em>Planned</em></b><p>More features and community events.</p></div>
+  </div>
+
+  <h2>FAQ <small>Questions</small></h2>
+  <details><summary>What are O Points?</summary><p>Points that show your participation in the Orvexao community. You earn them from quests, daily check-ins and referrals.</p></details>
+  <details><summary>Do O Points have monetary value?</summary><p>This cannot be guaranteed. O Points are not a currency or an investment, and any future use will be announced directly.</p></details>
+  <details><summary>How are quests verified?</summary><p>Currently you confirm quests yourself after completing them. Automatic verification will be added later.</p></details>
+  <details><summary>How do I earn referral points?</summary><p>When someone joins with your link, you get +50 and they get +25. Reaching certain referral counts unlocks extra bonuses.</p></details>
+
+  <footer>
+    <div class="fb"><svg class="lgs" aria-hidden="true"><use href="#lg"/></svg>Orvexao</div>
+    <p>A community-driven Web3 project. Stay with us.</p>
+    <div class="fl"><a id="fx" href="https://x.com/Orvexao" target="_blank" rel="noopener">X (Twitter)</a><a id="ftg" href="https://t.me/+P-LIrcUXnWw0OTE1" target="_blank" rel="noopener">Telegram</a></div>
+    <p class="disc">Disclaimer: O Points are not a financial investment or currency, and their monetary value is not guaranteed. Do your own research before making any crypto-related decision.</p>
+  </footer>
+
+  <div class="foot"><button class="reset" id="reset">Reset demo data</button></div>
+</main>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+/* ===== Settings ===== */
+var CONFIG = {
+  tweetId: "1234567890",   // replace with the numeric ID of your tweet
+  telegram: "https://t.me/+P-LIrcUXnWw0OTE1",
+  xProfile: "https://x.com/Orvexao",
+  siteUrl: "",
+  postText: "Join Orvexao and earn O Points! 🚀 #Orvexao",
+  tagText: "I’m earning O Points on the Orvexao project! @friend1 @friend2 join me 🚀 #Orvexao"
+};
+var DAILY=[5,5,10,10,15,20,40], MILES=[[3,100],[10,300],[25,1000]];
+var TASKS=[
+  {id:"like",g:"tw",ico:"❤️",t:"Like the tweet",p:10,url:"https://x.com/intent/like?tweet_id="+CONFIG.tweetId},
+  {id:"comment",g:"tw",ico:"💬",t:"Comment on the tweet",p:20,url:"https://x.com/intent/tweet?in_reply_to="+CONFIG.tweetId},
+  {id:"share",g:"tw",ico:"🔁",t:"Retweet / share the tweet",p:30,url:"https://x.com/intent/retweet?tweet_id="+CONFIG.tweetId},
+  {id:"post",g:"tw",ico:"✍️",t:"Post about the project",p:50,url:"https://x.com/intent/tweet?text="+encodeURIComponent(CONFIG.postText)},
+  {id:"tag",g:"tw",ico:"👥",t:"Tag 2 friends in a post about the project",p:60,url:"https://x.com/intent/tweet?text="+encodeURIComponent(CONFIG.tagText)},
+  {id:"join",g:"tg",ico:"✈️",t:"Join the Telegram channel",p:25,url:CONFIG.telegram}
+];
+var LEVELS=[[0,"New member"],[100,"Active member"],[250,"Champion"],[500,"Legend"]];
+var $=function(i){return document.getElementById(i)};
+var timers={};
+
+/* ===== Local demo storage (this browser only) ===== */
+var KEY="orvexao_demo_v1", mem=null;
+function pad(n){return n<10?"0"+n:""+n}
+function ymd(d){return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())}
+function today(){return ymd(new Date())}
+function yest(){var d=new Date();d.setDate(d.getDate()-1);return ymd(d)}
+function rand(){var c="ABCDEFGHJKLMNPQRSTUVWXYZ23456789",s="";for(var i=0;i<6;i++)s+=c.charAt(Math.floor(Math.random()*c.length));return s}
+function fresh(){return {tasks:[],streak:0,last:"",daily:0,refs:0,welcome:0,code:rand()}}
+function load(){var v=null;try{v=JSON.parse(localStorage.getItem(KEY))}catch(e){}return v||mem||fresh()}
+var S=load();
+function save(){mem=S;try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+
+function streakNow(){return (S.last===today()||S.last===yest())?S.streak:0}
+function claimed(){return S.last===today()}
+function taskPts(){var n=0;TASKS.forEach(function(t){if(S.tasks.indexOf(t.id)>-1)n+=t.p});return n}
+function refEarn(){var n=S.refs*50;MILES.forEach(function(m){if(S.refs>=m[0])n+=m[1]});return n}
+function totalPts(){return taskPts()+S.daily+refEarn()+S.welcome}
+
+function toast(m){var e=$("toast");e.textContent=m;e.classList.add("show");clearTimeout(toast.t);toast.t=setTimeout(function(){e.classList.remove("show")},2400)}
+function base(){return location.href.split("#")[0].split("?")[0]}
+function rlink(){return (CONFIG.siteUrl||base())+"?ref="+S.code}
+
+/* welcome bonus when arriving through someone's referral link */
+try{var rf=new URLSearchParams(location.search).get("ref");
+  if(rf&&/^[A-Za-z0-9]{4,10}$/.test(rf)&&rf.toUpperCase()!==S.code&&!S.welcome){S.welcome=25;save();setTimeout(function(){toast("Welcome bonus +25 O Points 🎉")},400)}}catch(e){}
+
+/* ===== Render ===== */
+function render(){
+  var total=totalPts(),cnt={tw:0,tg:0},all={tw:0,tg:0};
+  $("tw").innerHTML="";$("tg").innerHTML="";
+  TASKS.forEach(function(t){
+    var d=S.tasks.indexOf(t.id)>-1,pend=timers[t.id]!==undefined;
+    all[t.g]++;if(d)cnt[t.g]++;
+    var r=document.createElement("div");r.className="task"+(d?" done":"");
+    r.innerHTML='<div class="ico">'+t.ico+'</div><div><h3>'+t.t+'</h3><small><span class="p">+'+t.p+'</span> O Points</small></div>';
+    var b=document.createElement("button");b.className="act"+(d?" ok":"");
+    b.textContent=d?"Done ✓":(pend?(timers[t.id]>0?"Wait "+timers[t.id]+"s":"Confirm"):"Start");
+    b.disabled=d||(pend&&timers[t.id]>0);
+    b.onclick=function(){pend?verify(t):start(t)};
+    r.appendChild(b);$(t.g).appendChild(r);
+  });
+  $("c1").textContent=cnt.tw+"/"+all.tw;$("c2").textContent=cnt.tg+"/"+all.tg;
+  var li=0;LEVELS.forEach(function(l,i){if(total>=l[0])li=i});
+  var cur=LEVELS[li][0],nx=LEVELS[li+1];
+  $("total").textContent=total;$("lv").textContent=LEVELS[li][1];
+  if(nx){$("next").textContent=""+(nx[0]-total)+" points to the next level";$("fg").style.strokeDashoffset=326.7*(1-(total-cur)/(nx[0]-cur))}
+  else{$("next").textContent="You are at the top level!";$("fg").style.strokeDashoffset=0}
+  var st=streakNow(),cl=claimed(),idx=cl?(st-1)%7:st%7;
+  $("stk").textContent=st;$("stk2").textContent=st;
+  $("today").innerHTML="Today’s reward: <b>"+(cl?"Claimed ✓":"+"+DAILY[idx])+"</b>";
+  $("days").innerHTML="";
+  DAILY.forEach(function(v,i){
+    var got=st>0&&i<(cl?idx+1:idx),d=document.createElement("div");
+    d.className="day"+(got?" got":"")+(i===idx&&!cl?" now":"");
+    d.innerHTML="Day "+(i+1)+"<b>+"+v+"</b>";$("days").appendChild(d);
+  });
+  $("ci").disabled=cl;$("ci").textContent=cl?"Come back tomorrow":"Check in today";
+  $("rlink").textContent=rlink();
+  $("rc").textContent=S.refs;$("re").textContent=refEarn();
+  $("miles").innerHTML="";
+  MILES.forEach(function(m){var ok=S.refs>=m[0],d=document.createElement("div");d.className="ms"+(ok?" ok":"");d.innerHTML="<span>Invite "+m[0]+" friends</span><b>+"+m[1]+(ok?" ✓":"")+"</b>";$("miles").appendChild(d)});
+}
+
+/* ===== Actions ===== */
+function start(t){
+  window.open(t.url,"_blank","noopener");
+  timers[t.id]=8;render();
+  var iv=setInterval(function(){timers[t.id]--;render();if(timers[t.id]<=0)clearInterval(iv)},1000);
+}
+function verify(t){
+  delete timers[t.id];
+  if(S.tasks.indexOf(t.id)<0)S.tasks.push(t.id);
+  save();render();toast("+"+t.p+" O Points added 🎉");
+}
+function checkin(){
+  if(claimed())return;
+  var st=(S.last===yest())?S.streak+1:1,pts=DAILY[(st-1)%7];
+  S.streak=st;S.last=today();S.daily+=pts;
+  save();render();toast("+"+pts+" O Points · "+st+"-day streak 🔥");
+}
+$("ci").onclick=checkin;
+
+/* ===== Referral ===== */
+var SHARE="Join Orvexao and earn O Points! 🚀";
+$("rcopy").onclick=function(){
+  var l=rlink();
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(l).then(function(){toast("Link copied ✓")},function(){toast("Press and hold the link to copy")})}else toast("Press and hold the link to copy");
+};
+$("rx").onclick=function(){window.open("https://x.com/intent/tweet?text="+encodeURIComponent(SHARE)+"&url="+encodeURIComponent(rlink()),"_blank","noopener")};
+$("rtg").onclick=function(){window.open("https://t.me/share/url?url="+encodeURIComponent(rlink())+"&text="+encodeURIComponent(SHARE),"_blank","noopener")};
+$("rsim").onclick=function(){S.refs++;save();render();toast("Demo referral added: +50 O Points")};
+$("reset").onclick=function(){if(confirm("Reset all demo progress?")){S=fresh();timers={};save();render();toast("Demo data reset")}};
+$("fx").href=CONFIG.xProfile;$("ftg").href=CONFIG.telegram;
+
+/* ===== Start ===== */
+render();
+</script>
+</body>
+</html>
